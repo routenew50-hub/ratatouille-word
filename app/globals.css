@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Chef / Recipe Notebook Theme
+   ========================= */
+
+:root {
+  --chef-bg: #f3efe6;        /* 린넨 배경 */
+  --chef-paper: #fbfaf6;     /* 카드/종이 */
+  --chef-border: rgba(60, 50, 40, 0.15);
+  --chef-shadow: 0 10px 22px rgba(60, 50, 40, 0.12);
+
+  /* 버튼 컬러 */
+  --chef-olive: #7a8450;
+  --chef-olive-hover: #6b7446;
+
+  --chef-brown: #8b5e3c;
+  --chef-brown-hover: #7a5235;
+
+  --chef-red: #a44a3f;
+  --chef-red-hover: #8e3f36;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--chef-bg);
+
+  /* 종이 질감 */
+  background-image:
+    radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: 26px 26px;
+
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* 카드/섹션 = 레시피 종이 */
+.bg-white {
+  background-color: var(--chef-paper) !important;
+}
+
+.ring-slate-200,
+.border-slate-200 {
+  border-color: var(--chef-border) !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--chef-shadow) !important;
+}
+
+/* =========================
+   Selection accent
+   ========================= */
+::selection {
+  background: rgba(245, 158, 11, 0.25);
+}

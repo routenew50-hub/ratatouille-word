@@ -11,7 +11,7 @@ import {
   saveAllCards,
 } from "./lib/storage";
 import { getTasteTag } from "./lib/taste";
-import { getLinguaNick, importLinguaWords, setLinguaNick } from "./lib/lingua";
+import { getLinguaNick, importLinguaWords, resetAllForLingua, setLinguaNick } from "./lib/lingua";
 
 function todayLocal(): string {
   const d = new Date();
@@ -226,6 +226,20 @@ export default function HomePage() {
             </button>
           </div>
           {linguaMsg ? <p className="mt-2 text-xs text-slate-600">{linguaMsg}</p> : null}
+          <button
+            type="button"
+            onClick={() => {
+              if (!linguaNick.trim()) { setLinguaMsg("별명을 먼저 적어주세요"); return; }
+              if (!window.confirm("단어장의 카드와 세트를 모두 지우고, 링구아 단어를 처음부터 다시 가져올까요?\n(직접 넣은 카드도 지워져요)")) return;
+              setLinguaNick(linguaNick);
+              resetAllForLingua();
+              refresh();
+              runLinguaImport();
+            }}
+            className="mt-2 h-9 w-full rounded-xl ring-1 ring-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
+          >
+            🧹 다 지우고 링구아에서 처음부터 가져오기
+          </button>
           {linguaMsg.startsWith("✅") ? (
             <Link
               href={`/study/${today}`}

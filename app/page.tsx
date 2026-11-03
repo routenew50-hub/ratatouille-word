@@ -226,6 +226,17 @@ export default function HomePage() {
             </button>
           </div>
           {linguaMsg ? <p className="mt-2 text-xs text-slate-600">{linguaMsg}</p> : null}
+          {linguaMsg.startsWith("✅") ? (
+            <Link
+              href={`/study/${today}`}
+              className="mt-2 inline-flex w-full items-center justify-center h-10 rounded-xl
+              bg-[color:var(--chef-olive)] text-white text-sm font-semibold
+              hover:bg-[color:var(--chef-olive-hover)]
+              active:opacity-90 transition"
+            >
+              🍽 가져온 카드 보기 (오늘 {today} 세트)
+            </Link>
+          ) : null}
         </section>
 
         {/* 🍽 / 🧄 이동 섹션 */}

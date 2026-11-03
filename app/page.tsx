@@ -56,8 +56,8 @@ export default function HomePage() {
         added
           ? `✅ 링구아에서 ${added}개 가져왔어요${skipped ? ` (이미 있거나 넣을 칸이 없는 ${skipped}개 제외)` : ""}`
           : skipped
-          ? `링구아 단어 ${skipped}개는 이미 있거나 넣을 칸이 없어서 건너뛰었어요`
-          : "새로 가져올 링구아 단어가 없어요"
+          ? `링구아 단어 ${skipped}개는 이미 단어장에 있거나 넣을 칸이 없어서 건너뛰었어요`
+          : "새로 가져올 링구아 단어가 없어요 (이미 다 가져왔어요)"
       );
       refresh();
     } catch (e) {
@@ -201,7 +201,7 @@ export default function HomePage() {
         <section className="mt-6 rounded-2xl bg-white ring-1 ring-slate-200 p-5">
           <h2 className="text-lg font-semibold text-slate-900">🔗 링구아 단어 가져오기</h2>
           <p className="mt-1 text-sm text-slate-600">
-            링구아에서 저장한 단어가 이 단어장을 열 때 자동으로 들어와요. 링구아 별명을 한 번만 적어주세요.
+            링구아에서 저장한 단어가 이 단어장을 열 때 자동으로 오늘 세트에 들어와요. 링구아 별명을 한 번만 적어주세요.
           </p>
           <div className="mt-3 flex gap-2">
             <input

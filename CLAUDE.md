@@ -12,7 +12,7 @@
 
 ## 링구아 연결 (2026-11-03)
 - `app/lib/lingua.ts`: 링구아가 Supabase(family-hub-system) `study_words`에 저장한 단어를 별명 기준으로 읽어 카드로 만듦.
-  - 첫 화면을 열 때 자동 + "가져오기" 버튼. 별명은 `cw_lingua_nick`, 마지막으로 가져온 id는 `cw_lingua_last_id_v2`.
+  - 첫 화면을 열 때 자동 + "가져오기" 버튼. 별명은 `cw_lingua_nick`, 마지막으로 가져온 id는 `cw_lingua_last_id_v3`.
   - 언어: `lang`(en/fr/zh) → 해당 칸. 비어 있으면 글자 모양으로 짐작. **`category`(기본값 "기본")는 다른 앱 칸이라 언어로 쓰지 않기.** 일본어(ja)는 칸이 없어서 건너뜀. 같은 단어는 중복 안 넣음.
-  - 카드 id는 `lingua-<study_words id>`, 세트 날짜는 링구아에서 저장한 날.
+  - 카드 id는 `lingua-<study_words id>`, 세트 날짜는 **가져온 날(오늘)** — 오늘의 Rata에서 바로 보이게 (v3).
   - 복사만 함: 단어장에서 지워도 링구아 단어는 남음.

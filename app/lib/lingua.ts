@@ -7,7 +7,7 @@
 
 import type { Flashcard } from "../types";
 import { addCardToDailySet, loadAllCards, saveAllCards } from "./storage";
-import { formatDate } from "./utils";
+import { getTodayDate } from "./utils";
 
 const SB_URL = "https://usxludhmhucxlocpcwdr.supabase.co";
 // 공개용 anon 키 (링구아 화면 코드에 들어 있는 것과 같은 키)
@@ -15,8 +15,8 @@ const SB_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzeGx1ZGhtaHVjeGxvY3Bjd2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyNjA2NzEsImV4cCI6MjA4NzgzNjY3MX0.8WG5hguKKk4taHgZ6N0Mzwp8VARVJ4OpO8iogtbAREY";
 
 const KEY_NICK = "cw_lingua_nick";
-// v2: 처음 버전이 category("기본")를 언어로 잘못 읽어 단어를 건너뛰고 id만 넘어갔던 것 → 처음부터 다시 가져오기
-const KEY_LAST_ID = "cw_lingua_last_id_v2";
+// v3: 가져온 단어를 "오늘" 세트에 넣도록 바꾸면서 처음부터 다시 확인 (이미 있는 단어는 중복으로 안 넣음)
+const KEY_LAST_ID = "cw_lingua_last_id_v3";
 
 type Row = {
   id: number;
@@ -24,7 +24,6 @@ type Row = {
   meaning: string | null;
   example: string | null;
   lang: string | null; // 링구아의 학습 언어 (en/fr/zh/ja), 예전 단어는 비어 있음 (category는 다른 앱이 쓰는 칸)
-  created_at: string;
 };
 
 export function getLinguaNick(): string {
@@ -53,7 +52,7 @@ export async function importLinguaWords(): Promise<{ added: number; skipped: num
   const lastId = Number(localStorage.getItem(KEY_LAST_ID) || "0");
 
   const q =
-    `select=id,word,meaning,example,lang,created_at` +
+    `select=id,word,meaning,example,lang` +
     `&nickname=eq.${encodeURIComponent(nick)}&id=gt.${lastId}&order=id.asc`;
   const res = await fetch(`${SB_URL}/rest/v1/study_words?${q}`, {
     headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` },
@@ -80,7 +79,8 @@ export async function importLinguaWords(): Promise<{ added: number; skipped: num
       continue;
     }
 
-    const date = formatDate(new Date(r.created_at));
+    // 링구아에 저장한 날이 아니라 가져온 날(오늘) 세트에 넣어서 "오늘의 Rata"에서 바로 보이게
+    const date = getTodayDate();
     const card: Flashcard = {
       id: `lingua-${r.id}`,
       en: "", fr: "", zh: "", hanja: "",

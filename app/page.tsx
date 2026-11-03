@@ -11,6 +11,7 @@ import {
   saveAllCards,
 } from "./lib/storage";
 import { getTasteTag } from "./lib/taste";
+import { getLinguaNick, importLinguaWords, setLinguaNick } from "./lib/lingua";
 
 function todayLocal(): string {
   const d = new Date();
@@ -42,9 +43,31 @@ export default function HomePage() {
     setSets(loadDailySets());
   }, []);
 
+  // 🔗 링구아 단어 가져오기 (열 때 자동 + 버튼)
+  const [linguaNick, setLinguaNickState] = useState("");
+  const [linguaMsg, setLinguaMsg] = useState("");
+
+  const runLinguaImport = useCallback(async () => {
+    if (!getLinguaNick()) return;
+    setLinguaMsg("링구아 단어 확인 중...");
+    try {
+      const { added, skipped } = await importLinguaWords();
+      setLinguaMsg(
+        added
+          ? `✅ 링구아에서 ${added}개 가져왔어요${skipped ? ` (겹치거나 못 넣은 ${skipped}개 제외)` : ""}`
+          : "새로 가져올 링구아 단어가 없어요"
+      );
+      refresh();
+    } catch (e) {
+      setLinguaMsg(`❌ ${(e as Error).message}`);
+    }
+  }, [refresh]);
+
   useEffect(() => {
     refresh();
-  }, [refresh]);
+    setLinguaNickState(getLinguaNick());
+    runLinguaImport();
+  }, [refresh, runLinguaImport]);
 
   const addNewCard = useCallback(() => {
     const head = en.trim();
@@ -170,6 +193,37 @@ export default function HomePage() {
               🍞 재료 추가하기
             </button>
           </div>
+        </section>
+
+        {/* 🔗 링구아 연결 */}
+        <section className="mt-6 rounded-2xl bg-white ring-1 ring-slate-200 p-5">
+          <h2 className="text-lg font-semibold text-slate-900">🔗 링구아 단어 가져오기</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            링구아에서 저장한 단어가 이 단어장을 열 때 자동으로 들어와요. 링구아 별명을 한 번만 적어주세요.
+          </p>
+          <div className="mt-3 flex gap-2">
+            <input
+              className="h-11 flex-1 min-w-0 rounded-xl ring-1 ring-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-slate-400"
+              placeholder="링구아 별명"
+              value={linguaNick}
+              onChange={(e) => setLinguaNickState(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (!linguaNick.trim()) { setLinguaMsg("별명을 적어주세요"); return; }
+                setLinguaNick(linguaNick);
+                runLinguaImport();
+              }}
+              className="h-11 px-4 rounded-xl
+              bg-[color:var(--chef-olive)] text-white text-sm font-semibold
+              hover:bg-[color:var(--chef-olive-hover)]
+              active:opacity-90 transition"
+            >
+              가져오기
+            </button>
+          </div>
+          {linguaMsg ? <p className="mt-2 text-xs text-slate-600">{linguaMsg}</p> : null}
         </section>
 
         {/* 🍽 / 🧄 이동 섹션 */}

@@ -15,14 +15,15 @@ const SB_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzeGx1ZGhtaHVjeGxvY3Bjd2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyNjA2NzEsImV4cCI6MjA4NzgzNjY3MX0.8WG5hguKKk4taHgZ6N0Mzwp8VARVJ4OpO8iogtbAREY";
 
 const KEY_NICK = "cw_lingua_nick";
-const KEY_LAST_ID = "cw_lingua_last_id";
+// v2: 처음 버전이 category("기본")를 언어로 잘못 읽어 단어를 건너뛰고 id만 넘어갔던 것 → 처음부터 다시 가져오기
+const KEY_LAST_ID = "cw_lingua_last_id_v2";
 
 type Row = {
   id: number;
   word: string;
   meaning: string | null;
   example: string | null;
-  category: string | null; // 링구아의 학습 언어 (en/fr/zh/ja), 예전 단어는 비어 있음
+  lang: string | null; // 링구아의 학습 언어 (en/fr/zh/ja), 예전 단어는 비어 있음 (category는 다른 앱이 쓰는 칸)
   created_at: string;
 };
 
@@ -52,7 +53,7 @@ export async function importLinguaWords(): Promise<{ added: number; skipped: num
   const lastId = Number(localStorage.getItem(KEY_LAST_ID) || "0");
 
   const q =
-    `select=id,word,meaning,example,category,created_at` +
+    `select=id,word,meaning,example,lang,created_at` +
     `&nickname=eq.${encodeURIComponent(nick)}&id=gt.${lastId}&order=id.asc`;
   const res = await fetch(`${SB_URL}/rest/v1/study_words?${q}`, {
     headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` },
@@ -67,7 +68,7 @@ export async function importLinguaWords(): Promise<{ added: number; skipped: num
 
   for (const r of rows) {
     const word = (r.word || "").trim();
-    const cat = r.category || guessLang(word);
+    const cat = r.lang || guessLang(word);
     if (!word || !["en", "fr", "zh"].includes(cat)) {
       skipped++; // 일본어 등 단어장에 칸이 없는 언어
       continue;

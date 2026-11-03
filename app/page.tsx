@@ -54,7 +54,9 @@ export default function HomePage() {
       const { added, skipped } = await importLinguaWords();
       setLinguaMsg(
         added
-          ? `✅ 링구아에서 ${added}개 가져왔어요${skipped ? ` (겹치거나 못 넣은 ${skipped}개 제외)` : ""}`
+          ? `✅ 링구아에서 ${added}개 가져왔어요${skipped ? ` (이미 있거나 넣을 칸이 없는 ${skipped}개 제외)` : ""}`
+          : skipped
+          ? `링구아 단어 ${skipped}개는 이미 있거나 넣을 칸이 없어서 건너뛰었어요`
           : "새로 가져올 링구아 단어가 없어요"
       );
       refresh();

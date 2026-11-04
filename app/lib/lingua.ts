@@ -45,13 +45,6 @@ function guessLang(word: string): "en" | "fr" | "zh" {
   return "en";
 }
 
-/** 단어장 전체(카드·세트)를 비우고 링구아 가져온 기록도 지움 → 다음 가져오기는 처음부터. 별명은 남김 */
-export function resetAllForLingua() {
-  localStorage.removeItem("cw_all_cards");
-  localStorage.removeItem("cw_daily_sets");
-  localStorage.removeItem(KEY_LAST_ID);
-}
-
 /** 새 링구아 단어를 카드로 가져오고, 가져온 개수를 돌려준다 */
 export async function importLinguaWords(): Promise<{ added: number; skipped: number }> {
   const nick = getLinguaNick();
